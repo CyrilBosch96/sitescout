@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}SiteScout Dashboard{% endblock %}
+{% block head_extra %}
+{% if pipeline_status.running %}
+<meta http-equiv="refresh" content="8">
+{% endif %}
+{% endblock %}
+{% block content %}
+    <h1>Pipeline Dashboard</h1>
+    <p class="subtitle">Lead discovery → outreach → Track B, end to end.</p>
+
+    <div class="status-banner {{ 'running' if pipeline_status.running else 'idle' }}">
+        {% if pipeline_status.running %}⏳{% else %}✓{% endif %} {{ pipeline_status.label }}
+        {% if pipeline_status.running %}<span class="detail">— started {{ pipeline_status.started_at | ist }}, page refreshes automatically</span>{% endif %}
+    </div>
+
+    <div class="run-pipeline-bar">
+        <form method="post" action="{{ url_for('trigger', script_name='orchestrator') }}">
+            <button type="submit" class="btn btn-primary" {% if pipeline_status.running %}disabled{% endif %}>▶ Run Full Pipeline Now</button>
+        </form>
+        <span class="hint">Runs the same hourly cycle (Inbox → Leads → Emails → Track B) on demand.</span>
+    </div>
+
+    <h2>What's About to Happen</h2>
+    <p class="hint">Preview of the <em>next</em> Cold Email run — nothing here has sent yet. New-lead quota today: <strong>{{ upcoming_sends.new_quota_remaining }}</strong> of {{ upcoming_sends.max_new_sends }} remaining.</p>
+    {% if upcoming_sends.stages %}
+    <div class="card-grid">
+        {% for stage in upcoming_sends.stages %}
+        <div class="card stat-card">
+            <span class="n">{{ stage.ready }}</span>
+            <span class="label">{{ stage.label }}</span>
+            <div class="sub">
+                {% if stage.waiting_windows %}
+                {% for w in stage.waiting_windows %}
+                {{ w.count }} waiting for {{ w.timezone }} morning<br>~{{ w.next_window }} / {{ w.next_window_ist }}<br>
+                {% endfor %}
+                {% endif %}
+                {% if stage.waiting_for_quota %}{{ stage.waiting_for_quota }} waiting on today's quota<br>{% endif %}
+                {% if stage.not_yet_due %}{{ stage.not_yet_due }} not yet due<br>{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No leads currently queued for a cold email or follow-up.</div>
+    {% endif %}
+
+    <h2>Rejected-Leads Cache</h2>
+    <p class="hint">Businesses already searched and found not-qualifying (not Box 1, or no email found) — kept here so the same business isn't re-checked on every search. These never entered the CRM.</p>
+    <div class="card run-pipeline-bar">
+        <span><strong>{{ checked_places_cache.count }}</strong> businesses cached</span>
+        <form method="post" action="{{ url_for('clear_checked_places_cache') }}" onsubmit="return confirm('Clear the rejected-leads cache? The next search will re-check every business in the area from scratch.');">
+            <button type="submit" class="btn btn-danger btn-sm">Clear Cache</button>
+        </form>
+    </div>
+
+    <h2>Today's Numbers</h2>
+    <div class="card-grid">
+        <div class="card stat-card"><span class="n">{{ today_report.sent }}</span><span class="label">New leads emailed</span></div>
+        <div class="card stat-card"><span class="n">{{ today_report.followups[1] }}</span><span class="label">Follow-up 1</span></div>
+        <div class="card stat-card"><span class="n">{{ today_report.followups[2] }}</span><span class="label">Follow-up 2</span></div>
+        <div class="card stat-card"><span class="n">{{ today_report.followups[3] }}</span><span class="label">Follow-up 3</span></div>
+        <div class="card stat-card"><span class="n">{{ today_report.followups[4] }}</span><span class="label">Follow-up 4</span></div>
+        <div class="card stat-card"><span class="n">{{ today_report.replies_needing_review }}</span><span class="label">Replies needing review</span></div>
+        <div class="card stat-card"><span class="n">{{ today_report.previews_activated_this_week }}</span><span class="label">Previews activated (week)</span></div>
+        <div class="card stat-card"><span class="n">{{ today_report.conversions_this_week }}</span><span class="label">Conversions (snapshot)</span></div>
+    </div>
+
+    <h2>Status Grid</h2>
+    <div class="table-wrap">
+    <table>
+        <tr><th>Script</th><th>Status</th><th>Last Run</th><th>Duration</th><th>Notes</th><th></th><th>Trigger</th></tr>
+        {% for row in grid %}
+        <tr>
+            <td>{{ row.script_name }}</td>
+            <td><span class="pill pill-{{ row.status | replace(' ', '-') }}">{{ row.status }}</span></td>
+            <td>{{ row.started_at | ist }}</td>
+            <td>{% if row.duration_seconds is not none %}{{ "%.1f"|format(row.duration_seconds) }}s{% else %}—{% endif %}</td>
+            <td class="wrap">{{ row.notes or "" }}</td>
+            <td><a href="{{ url_for('history', script_name=row.script_name) }}">History →</a></td>
+            <td>
+                {% if row.script_name == "lead_discovery_and_evaluation_Contactsearch" %}
+                <form class="trigger" method="post" action="{{ url_for('trigger', script_name=row.script_name) }}">
+                    <input type="text" name="niche" placeholder="Niche" required {% if pipeline_status.running %}disabled{% endif %}>
+                    <input type="text" name="location" placeholder="Location" required {% if pipeline_status.running %}disabled{% endif %}>
+                    <button type="submit" class="btn btn-sm" {% if pipeline_status.running %}disabled{% endif %}>Run</button>
+                </form>
+                {% else %}
+                <form class="trigger" method="post" action="{{ url_for('trigger', script_name=row.script_name) }}">
+                    <button type="submit" class="btn btn-sm" {% if pipeline_status.running %}disabled{% endif %}>Run</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+
+    <h2>Recent Failures</h2>
+    {% if failures %}
+    <div class="table-wrap">
+    <table>
+        <tr><th>Script</th><th>When</th><th>Error</th></tr>
+        {% for f in failures %}
+        <tr>
+            <td>{{ f.script_name }}</td>
+            <td>{{ f.started_at | ist }}</td>
+            <td class="error-msg">{{ f.error_message }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">No failures logged.</div>
+    {% endif %}
+
+    <h2>Leads — Bulk Select for Ghost Site (Track B)</h2>
+    <p class="hint">
+        Candidates only — this list refills automatically as new qualifying leads land in the CRM, and a lead drops off it the moment you select it (it moves to <a href="{{ url_for('selected_leads') }}">Selected Leads</a> instead). Open counts are reviewed manually in Mail Suite (free tier, no API) — pick your leads there, then check them here.
+    </p>
+    {% if leads %}
+    <form method="post" action="{{ url_for('select_leads') }}" id="candidate-form">
+        <div class="table-wrap">
+        <table>
+            <tr><th></th><th>Business Name</th><th>Box</th><th>Contact Status</th></tr>
+            {% for lead in leads %}
+            <tr>
+                <td><input type="checkbox" name="page_id" value="{{ lead.page_id }}" class="candidate-checkbox"></td>
+                <td>{{ lead.name }}</td>
+                <td>{{ lead.box or "" }}</td>
+                <td>{{ lead.contact_status or "" }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        </div>
+        <div class="run-pipeline-bar">
+            <button type="submit" class="btn btn-primary">Set Selected to "Selected"</button>
+            <button type="button" class="btn btn-ghost" onclick="document.querySelectorAll('.candidate-checkbox').forEach(function(cb){ cb.checked = false; });">Clear Selection</button>
+        </div>
+    </form>
+    {% else %}
+    <div class="empty-state">No candidate leads waiting right now — this fills in as new Box 1 leads qualify.</div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,70 @@
+# SiteScout — tunable settings (numbers + shared operational values).
+# Secrets stay in .env — see hp_env.py. Loaded once via scripts/hp_config.py.
+# Sprint 12 / Gap 5: the 7 PageSpeed + Core Web Vitals thresholds and the
+# lead-discovery quota are separate top-level keys, not nested or combined —
+# this is the exact shape Sprint 13a's settings panel needs to bind to
+# individually-editable fields.
+
+# --- Website Evaluation (Sprint 3) — 4 PageSpeed category scores ---
+pagespeed_performance_threshold: 0.9
+pagespeed_seo_threshold: 0.9
+pagespeed_accessibility_threshold: 0.9
+pagespeed_best_practices_threshold: 0.9
+
+# --- Website Evaluation (Sprint 3) — 3 Core Web Vitals ---
+core_web_vitals_lcp_threshold_ms: 2500
+core_web_vitals_cls_threshold: 0.1
+core_web_vitals_tbt_threshold_ms: 200
+
+# 3-of-7 signals must fail for a lead to qualify as Box 1.
+min_signals_failed: 3
+# Delay between repeat PageSpeed calls on the same site (4-run median method).
+pagespeed_recheck_delay_seconds: 5
+
+# --- Lead Discovery (Sprint 2) ---
+lead_discovery_min_qualifying_leads: 10
+lead_discovery_max_total_checked: 500
+
+# --- Lead Discovery grid search (2026-08-31) — Google Places Text Search
+# caps out around 60 results for a single broad "niche in city" query
+# regardless of the real market size, so a large city genuinely covers
+# a small fraction of its actual businesses in one query. Cyril's call:
+# subdivide the metro area into a grid of smaller search circles instead,
+# accumulating results cell by cell until the qualifying-lead target is
+# hit or the whole grid has been covered (a real, bounded stopping point
+# — never expand outward indefinitely past the metro area).
+discovery_grid_cell_radius_meters: 3000
+
+# Google's Places API (New) Text Search gives 5,000 free calls/month at
+# the tier this project uses; $32/1,000 after that. Cyril's explicit
+# call (2026-08-31): hard-stop at 4,999, never touch the 5,000 boundary,
+# no matter how many qualifying leads have or haven't been found —
+# discovery simply pauses for the rest of the calendar month and
+# resumes automatically on the 1st. See hp_api_budget.py.
+places_api_monthly_cap: 4999
+
+# --- Outreach Generation (Sprint 4) — competitor "beatable" logic ---
+competitor_rank_threshold: 10
+competitor_review_delta_threshold: 50
+
+# --- Cold Email / Orchestrator (Sprints 5, 8) ---
+daily_send_limit: 10
+# Full stop on cold_email.py — both first-touch AND follow-ups — for
+# mailbox warmup periods. daily_send_limit alone isn't enough for this:
+# it only caps new first-touch sends, follow-ups are deliberately
+# uncapped (see cold_email.py's docstring), so they'd keep going during
+# a warmup and defeat the point. Added 2026-09-10, Cyril's call after
+# confirming real cold sends were landing in spam and starting a
+# mailbox warmup — flip back to false once warmup is done.
+cold_email_paused: false
+cold_email_target_local_hour: 8
+cold_email_send_window_end_hour: 10
+
+# --- Orchestrator (Sprint 8) ---
+orchestrator_lock_max_age_seconds: 1800
+
+# --- Shared across every script that sends an internal ops email
+# (Queue Check, Inbox Monitoring notifications, Daily Reporting,
+# hp_runlog failure alerts) — was 4 separately hardcoded copies of the
+# same address before this sprint.
+operator_email: operator@example.com

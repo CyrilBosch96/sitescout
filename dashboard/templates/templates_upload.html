@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Ghost Site Templates — SiteScout Dashboard{% endblock %}
+{% block content %}
+    <h1>Ghost Site Templates</h1>
+    <p class="subtitle">Upload, review, and approve niche templates for Track B.</p>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <h2>Upload a Template</h2>
+    <div class="card">
+        <p class="hint">Upload your Paper AI export directly — the bundler format is unbundled automatically, and any &lt;script&gt; tags are stripped, same as the email reply pipeline. Mark real data spots with a <code>data-slot</code> attribute (e.g. <code>data-slot="business_name"</code>) wherever you want live lead data to appear — the system injects its own render script to fill those in, you never write or upload any JS. A separate CSS file is optional. Available fields: <code>business_name</code>, <code>city</code>, <code>phone</code> (use <code>data-slot-href="phone_tel"</code> on a link for a tap-to-call href), <code>hero_line</code>, <code>hours</code> (use <code>data-slot-list="hours"</code> on the container), <code>review_count</code>, <code>review_rating</code>. One confirmation step below before it's buildable.</p>
+        <p class="hint"><strong>Missing data:</strong> some leads (e.g. from a source other than Google Places) won't have hours, reviews, or a hero line. Those show honest placeholder copy instead of being hidden or faked — never a specific invented fact (no fake hours, no fake star rating). A missing phone hides the call-to-action entirely rather than showing a dead or wrong number. Business name and city are never faked.</p>
+        <form method="post" action="{{ url_for('upload_template') }}" enctype="multipart/form-data">
+            <input type="text" name="niche" placeholder="Niche (e.g. Barber Shops)" required>
+            <input type="file" name="html_file" accept=".html" required>
+            <input type="file" name="css_file" accept=".css">
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
+
+    <h2>Niche Template Status</h2>
+    {% if state %}
+    <div class="table-wrap">
+    <table>
+        <tr><th>Niche</th><th>Status</th><th>Data Slots Detected</th><th></th></tr>
+        {% for niche, entry in state.items() %}
+        <tr>
+            <td>{{ niche }}</td>
+            <td><span class="pill pill-{{ entry.status }}">{{ entry.status | replace('_', ' ') }}</span></td>
+            <td class="placeholders wrap">
+                {% if entry.detected_placeholders %}
+                {{ entry.detected_placeholders | join(", ") }}
+                {% else %}—{% endif %}
+            </td>
+            <td>
+                {% if entry.status == "pending_confirmation" %}
+                <form method="post" action="{{ url_for('confirm_template', niche=niche) }}">
+                    <button type="submit" class="btn btn-primary btn-sm">Confirm &amp; Approve</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">No niches in the template handoff pipeline yet.</div>
+    {% endif %}
+
+    <h2>Existing Templates on Disk</h2>
+    {% if existing %}
+    <div class="card-grid">
+        {% for slug in existing %}
+        <div class="card" style="padding: 0.6rem 1rem; font-size: 0.88rem;">{{ slug }}</div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No templates built yet.</div>
+    {% endif %}
+{% endblock %}

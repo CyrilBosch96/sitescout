@@ -1,0 +1,15 @@
+[Unit]
+Description=SiteScout dashboard (Flask)
+After=network.target
+
+[Service]
+Type=simple
+User=REPLACE_WITH_VM_USERNAME
+WorkingDirectory=/home/REPLACE_WITH_VM_USERNAME/sitescout
+ExecStart=/home/REPLACE_WITH_VM_USERNAME/sitescout/venv/bin/python3 dashboard/app.py
+Environment=DASHBOARD_PORT=5051
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

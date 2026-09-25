@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Content — SiteScout Dashboard{% endblock %}
+{% block content %}
+    <h1>Content</h1>
+    <p class="subtitle">Every email the pipeline sends — subject and body — editable here. Edits take effect on the next send, no code deploy needed.</p>
+    <p class="hint">Paste any of the codes shown under an email exactly as written (including the square brackets) anywhere in that email's text — it gets replaced with the real value when the email actually sends.</p>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% set categories = items | map(attribute='category') | unique | list %}
+    {% for category in categories %}
+    <h2>{{ category }}</h2>
+    {% for item in items if item.category == category %}
+    <div class="item">
+        <div class="item-label">{{ item.label }}</div>
+        <div class="placeholders">
+            {% if item.placeholders %}
+            Codes you can use: {% for p in item.placeholders %}<code>{{ p }}</code>{% if not loop.last %} {% endif %}{% endfor %}
+            {% else %}
+            No codes for this email — it's sent exactly as written.
+            {% endif %}
+        </div>
+        <form method="post" action="{{ url_for('update_content') }}">
+            <input type="hidden" name="key" value="{{ item.key }}">
+            <textarea name="text">{{ item.text }}</textarea><br>
+            <button type="submit" class="btn btn-primary btn-sm" style="margin-top: 0.6rem;">Save</button>
+        </form>
+    </div>
+    {% endfor %}
+    {% endfor %}
+
+    <h2>Change History</h2>
+    {% if history %}
+    <div class="table-wrap">
+    <table>
+        <tr><th>When</th><th>Content</th><th>New Text (preview)</th></tr>
+        {% for h in history %}
+        <tr>
+            <td>{{ h.changed_at | ist }}</td>
+            <td>{{ h.key }}</td>
+            <td class="wrap">{{ h.new_text[:80] }}{% if h.new_text|length > 80 %}…{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">No changes recorded yet.</div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,261 @@
+/* Barber Shops — Ghost Site template (Sprint 16/17)
+   Design tokens taken directly from Cyril's "Charcoal & Sand" design in
+   Paper AI — dark charcoal, ivory text, brass accent, Instrument Serif +
+   Geist. Simplified from his original interactive booking-app prototype
+   down to a static preview: the booking calendar, the 4 named barbers,
+   and the priced service list are all removed, since none of that is
+   data we actually have per lead (no fabricated staff/pricing, matches
+   the project's no-fabricated-facts rule). What's left is exactly the
+   data-slot contract ghost_site_lead_data.py produces. */
+
+:root {
+  --bg: #16181a;
+  --surface: #1f2225;
+  --border: #26292d;
+  --border-light: #3a3e43;
+  --ink: #f2efe9;
+  --ink-muted: #9aa0a6;
+  --ink-dim: #6e747a;
+  --brass: #c9a26b;
+
+  --font-display: "Instrument Serif", serif;
+  --font-body: "Geist", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 56px;
+}
+
+a { color: inherit; }
+a:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
+}
+
+/* --- Header --- */
+.site-header {
+  border-bottom: 1px solid var(--border);
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 56px;
+}
+
+.mark {
+  font-family: var(--font-display);
+  font-size: 26px;
+  letter-spacing: 0.02em;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.header-phone {
+  font-size: 14px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.header-cta {
+  border: 1px solid var(--brass);
+  color: var(--brass);
+  text-decoration: none;
+  padding: 11px 22px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.header-cta:hover {
+  background: var(--brass);
+  color: var(--bg);
+}
+
+/* --- Hero --- */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 480px;
+}
+
+@media (max-width: 800px) {
+  .hero-grid { grid-template-columns: 1fr; min-height: 0; }
+}
+
+.hero-copy {
+  padding: 96px 0 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+.hero-line {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0;
+  max-width: 14ch;
+}
+
+.hero-actions { padding-top: 8px; }
+
+.cta-primary {
+  display: inline-block;
+  background: var(--brass);
+  color: var(--bg);
+  text-decoration: none;
+  padding: 16px 32px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.15s ease;
+}
+
+.cta-primary:hover { background: #e0ac68; }
+
+.hero-panel {
+  background: linear-gradient(160deg, #2a2d31, #1b1e21);
+}
+
+/* --- Trust strip --- */
+.trust {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 0;
+}
+
+.trust-inner {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.trust-rating {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--brass);
+}
+
+.trust-copy {
+  color: var(--ink-muted);
+  font-size: 15px;
+}
+
+/* --- Hours --- */
+.hours { padding: 56px 0; }
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 34px;
+  margin: 0 0 20px;
+}
+
+.hours-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+  max-width: 420px;
+}
+
+.hours-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.hours-row span:first-child { color: var(--ink); }
+.hours-row span:last-child { color: var(--ink-dim); text-align: right; }
+.hours-row.placeholder { display: none; }
+
+/* --- Footer --- */
+.site-footer {
+  border-top: 1px solid var(--border);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  padding: 56px 56px 24px;
+}
+
+.footer-business {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 22px;
+}
+
+.footer-business span:last-child {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink-dim);
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--ink-dim);
+}
+
+.footer-label { color: var(--ink); }
+
+.footer-disclaimer {
+  padding: 0 56px 32px;
+  font-size: 12px;
+  color: var(--ink-dim);
+  letter-spacing: 0.01em;
+}
+
+.footer-disclaimer strong { color: var(--ink); font-weight: 500; }
+
+@media (max-width: 480px) {
+  .wrap { padding: 0 24px; }
+  .header-row { padding: 18px 24px; }
+  .hero-copy { padding: 56px 0 40px; }
+  .footer-grid { padding: 40px 24px 20px; grid-template-columns: 1fr; }
+  .footer-disclaimer { padding: 0 24px 24px; }
+}

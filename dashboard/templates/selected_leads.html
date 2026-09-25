@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Selected Leads — SiteScout Dashboard{% endblock %}
+{% block content %}
+    <h1>Selected Leads — Track B</h1>
+    <p class="subtitle">Everything currently staged or running through the ghost site pipeline.</p>
+
+    <h2>Pending — Selected, Not Yet Built</h2>
+    <p class="hint">Staged for the ghost site pipeline. Still clearable — clearing returns a lead to the main candidate pool with no Ghost Site Status. Once the first preview email actually sends, a lead moves to "Live" below and leaves this section automatically.</p>
+    {% if pending %}
+    <form method="post" action="{{ url_for('clear_selection') }}">
+        <div class="table-wrap">
+        <table>
+            <tr><th></th><th>Business Name</th><th>Box</th><th>Contact Status</th></tr>
+            {% for lead in pending %}
+            <tr>
+                <td><input type="checkbox" name="page_id" value="{{ lead.page_id }}" class="pending-checkbox"></td>
+                <td>{{ lead.name }}</td>
+                <td>{{ lead.box or "" }}</td>
+                <td>{{ lead.contact_status or "" }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        </div>
+        <div class="run-pipeline-bar">
+            <button type="submit" class="btn btn-danger">Clear Selection</button>
+            <button type="button" class="btn btn-ghost" onclick="document.querySelectorAll('.pending-checkbox').forEach(function(cb){ cb.checked = false; });">Uncheck All</button>
+        </div>
+    </form>
+    {% else %}
+    <div class="empty-state">Nothing pending — select leads from the main dashboard to queue them here.</div>
+    {% endif %}
+
+    <h2>Active — Live or Replied</h2>
+    <p class="hint">Ghost site preview already sent. "Mark Converted" is for after a real sales conversation closes — nothing here decides that automatically.</p>
+    {% if active %}
+    {% for lead in active %}
+    <form id="convert-form-{{ lead.page_id }}" method="post" action="{{ url_for('convert_lead', page_id=lead.page_id) }}"></form>
+    {% endfor %}
+    <div class="table-wrap">
+    <table>
+        <tr><th>Business Name</th><th>Box</th><th>Contact Status</th><th>Ghost Site Status</th><th></th></tr>
+        {% for lead in active %}
+        <tr>
+            <td>{{ lead.name }}</td>
+            <td>{{ lead.box or "" }}</td>
+            <td>{{ lead.contact_status or "" }}</td>
+            <td><span class="pill pill-neutral">{{ lead.ghost_site_status or "" }}</span></td>
+            <td><button type="submit" class="btn btn-sm" form="convert-form-{{ lead.page_id }}">Mark Converted</button></td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">No active ghost sites right now.</div>
+    {% endif %}
+{% endblock %}

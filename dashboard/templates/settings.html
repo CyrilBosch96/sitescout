@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Settings — SiteScout Dashboard{% endblock %}
+{% block content %}
+    <h1>Settings</h1>
+    <p class="subtitle">PageSpeed / Core Web Vitals thresholds and Lead Discovery quota — takes effect on the next run, no restart needed.</p>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <h2>Thresholds &amp; Quota</h2>
+    <div class="table-wrap">
+    <table>
+        <tr><th>Setting</th><th>Current Value</th><th>Google Default</th><th>New Value</th><th></th></tr>
+        {% for field in fields %}
+        <tr>
+            <td>{{ field.label }}</td>
+            <td>{{ field.current_value }}</td>
+            <td>
+                {% if field.default_value is not none %}
+                    {% if field.current_value == field.default_value %}
+                    <span class="default-match">{{ field.default_value }} (matches)</span>
+                    {% else %}
+                    <span class="default-deviation">{{ field.default_value }} (deviates)</span>
+                    {% endif %}
+                {% else %}
+                    <span class="default-match">— (no external default)</span>
+                {% endif %}
+            </td>
+            <td>
+                <form method="post" action="{{ url_for('update_settings') }}" class="inline">
+                    <input type="hidden" name="key" value="{{ field.key }}">
+                    <input type="text" name="value" placeholder="{{ field.current_value }}">
+                    <button type="submit" class="btn btn-sm">Save</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+
+    <h2>Change History</h2>
+    {% if history %}
+    <div class="table-wrap">
+    <table>
+        <tr><th>When</th><th>Setting</th><th>Old Value</th><th>New Value</th></tr>
+        {% for h in history %}
+        <tr>
+            <td>{{ h.changed_at | ist }}</td>
+            <td>{{ h.key }}</td>
+            <td>{{ h.old_value }}</td>
+            <td>{{ h.new_value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">No changes recorded yet.</div>
+    {% endif %}
+{% endblock %}

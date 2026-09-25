@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}SiteScout Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <div class="topnav">
+        <div class="topnav-inner">
+            <a class="brand" href="{{ url_for('index') }}">🪄 SiteScout</a>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' }}">Dashboard</a>
+                <a href="{{ url_for('selected_leads') }}" class="{{ 'active' if request.endpoint in ('selected_leads',) }}">Selected Leads</a>
+                <a href="{{ url_for('settings') }}" class="{{ 'active' if request.endpoint in ('settings', 'update_settings') }}">Settings</a>
+                <a href="{{ url_for('content') }}" class="{{ 'active' if request.endpoint in ('content', 'update_content') }}">Content</a>
+                <a href="{{ url_for('templates_page') }}" class="{{ 'active' if request.endpoint in ('templates_page', 'upload_template', 'confirm_template') }}">Templates</a>
+            </div>
+            <span class="env-tag">{{ config_env if config_env else "development" }}</span>
+        </div>
+    </div>
+    <div class="page">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

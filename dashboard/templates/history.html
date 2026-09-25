@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}History: {{ script_name }} — SiteScout Dashboard{% endblock %}
+{% block content %}
+    <h1>Run History</h1>
+    <p class="subtitle">{{ script_name }}</p>
+    <a class="back-link" href="{{ url_for('index') }}">← Back to dashboard</a>
+
+    {% if runs %}
+    <div class="table-wrap">
+    <table>
+        <tr><th>Status</th><th>Started</th><th>Finished</th><th>Notes</th><th>Error</th></tr>
+        {% for run in runs %}
+        <tr>
+            <td><span class="pill pill-{{ run.status }}">{{ run.status }}</span></td>
+            <td>{{ run.started_at | ist }}</td>
+            <td>{{ run.finished_at | ist }}</td>
+            <td class="wrap">{{ run.notes or "" }}</td>
+            <td class="error-msg">{{ run.error_message or "" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">No runs logged for this script yet.</div>
+    {% endif %}
+{% endblock %}

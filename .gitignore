@@ -1,0 +1,28 @@
+# Secrets — never commit
+.env
+
+# Runtime state — regenerated fresh on each environment, not shared code
+state.db
+state.json
+*.lock
+*.log
+checked_places_cache.json
+processed_replies.json
+processed_queue_replies.json
+processed_ghost_template_replies.json
+processed_bounces.json
+ghost_template_requests.json
+check_opens_reminder_state.json
+places_api_budget.json
+backups/
+
+# Legacy, not part of the live system
+scripts_old_pre_rebuild_backup/
+
+# Python / editor / OS noise
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+venv/
+.venv/

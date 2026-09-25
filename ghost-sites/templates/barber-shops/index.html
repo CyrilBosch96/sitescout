@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-slot="business_name">Barbershop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <span class="mark" data-slot="business_name">—</span>
+    <div class="header-actions">
+      <span class="header-phone" data-slot="phone">—</span>
+      <a class="header-cta" data-slot-href="phone_tel" href="#">Call</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow" data-slot="city">—</p>
+        <h1 class="hero-line" data-slot="hero_line">Your neighborhood barbershop.</h1>
+        <div class="hero-actions">
+          <a class="cta-primary" data-slot-href="phone_tel" href="#">Call <span data-slot="phone">—</span></a>
+        </div>
+      </div>
+      <div class="hero-panel" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section class="trust" data-slot-hidden-if-empty="review_count">
+    <div class="wrap trust-inner">
+      <span class="trust-rating"><span data-slot="review_rating">—</span>★</span>
+      <span class="trust-copy">from <span data-slot="review_count">—</span> reviews on Google</span>
+    </div>
+  </section>
+
+  <section class="hours">
+    <div class="wrap">
+      <h2 class="section-title">Hours</h2>
+      <ul class="hours-list" data-slot-list="hours">
+        <li class="hours-row placeholder"><span>Day</span><span>Hours</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-business">
+      <span class="footer-name" data-slot="business_name">—</span>
+      <span data-slot="city">—</span>
+    </div>
+    <div class="footer-col">
+      <span class="footer-label">Contact</span>
+      <span data-slot="phone">—</span>
+    </div>
+  </div>
+  <p class="wrap footer-disclaimer">
+    Demo prepared for <strong data-slot="business_name">this business</strong> by
+    <strong>SiteScout</strong>.
+  </p>
+</footer>
+
+</body>
+</html>

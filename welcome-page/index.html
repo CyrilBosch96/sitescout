@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your design is on its way — SiteScout</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06110d;
+    --surface: #101513;
+    --accent: #21e6a8;
+    --text: #edf2f0;
+    --muted: #8b9793;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', -apple-system, sans-serif;
+  }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  .card {
+    max-width: 620px;
+    text-align: center;
+  }
+  .mark {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 2rem;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid rgba(33, 230, 168, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mark svg { width: 1.4rem; height: 1.4rem; }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    font-size: clamp(2.4rem, 7vw, 4.2rem);
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    margin: 0 0 1.1rem;
+  }
+  h1 .accent { color: var(--accent); }
+  p {
+    font-size: clamp(1rem, 2.4vw, 1.15rem);
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0 auto;
+    max-width: 480px;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2.2rem;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #06110d;
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(33, 230, 168, 0.25);
+  }
+  .cta svg { width: 1.05rem; height: 1.05rem; }
+  .footer {
+    margin-top: 2.5rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(139, 151, 147, 0.6);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .card { animation: rise 0.6s ease-out; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#21e6a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6 9 17l-5-5"/>
+      </svg>
+    </div>
+    <h1>Your custom design is<br>on its <span class="accent">way</span></h1>
+    <p>Thanks for clicking. We're generating your website preview now and will email it to you shortly.</p>
+    <a class="cta" href="https://example.com">
+      Visit SiteScout
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <div class="footer">SiteScout</div>
+  </div>
+</body>
+</html>
