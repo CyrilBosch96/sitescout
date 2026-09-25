@@ -19,7 +19,8 @@ sys.path.insert(0, SCRIPTS_DIR)
 
 import ghost_template_processing as gtp  # noqa: E402
 
-REAL_EXPORT_PATH = "/Users/cyrilbosch/Desktop/Elite Barbers.html"
+# Point this at a real Paper AI template export to run the export tests.
+REAL_EXPORT_PATH = os.environ.get("GHOST_TEMPLATE_EXPORT", "Elite Barbers.html")
 
 
 # --- is_bundler_export() / unbundle() ---
