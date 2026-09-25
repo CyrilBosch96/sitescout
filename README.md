@@ -2,7 +2,7 @@
 
 An automated outreach pipeline that finds local businesses whose websites are losing them customers, then shows each owner a better version of their own site before asking for anything.
 
-I built SiteScout to show my PM skills end to end: not just understanding the business problem, but rapid prototyping, fixing bugs in production and deploying it myself. The product question it tests: **do people respond better when you show them a better version of what they have, instead of pitching them?**
+I built SiteScout to show my PM skills end to end: not just understanding the business problem, but rapid prototyping, fixing bugs in production and deploying it myself. The question it answers: **can one person run a complete outreach product, from discovery and qualification to follow-up, on its own for $0 a month?**
 
 **Read the case study:** [cyrilbosch.vercel.app/sitescout](https://cyrilbosch.vercel.app/sitescout)
 
